@@ -2,6 +2,8 @@ Alex Camacho - 12/29/15
 
 This is for PROJECT 4 of the Udacity Full Stack Nanodegree
 
+All comments made by me in the code begin with "# Camacho - "
+
 ## TASK 1
 
 I created the Session and SessionForm classes in the models file
