@@ -73,4 +73,19 @@ q = Session.query(ndb.OR(Session.typeOfSession=='lecture',\
     filter(Session.starttime<'19:00')
 
 
----------- TASK 4 ----------
+## TASK 4
+
+When a new conference session is added, if that conference has a
+speaker, a Task will be added to the queue that adds a memcache entry
+for that conference specifying that speaker as the "Featured Speaker"
+and all of his/her sessions, if they are speaking more than once at
+that conference.
+
+The key for the memcache entry is defined by the websafeConferenceKey
+since different conferences could have different Featured Speakers.  A
+delay was put in the task because the recently added session wasn't
+being saved in the datastore fast enough to be retrieved when adding
+the list of sessions to the memcache entry.
+
+The getFeaturedSpeaker function takes a websafeConferenceKey and returns
+that conference's Featured Speaker (if one exists).
