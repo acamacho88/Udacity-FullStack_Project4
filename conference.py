@@ -633,7 +633,7 @@ class ConferenceApi(remote.Service):
 
         # Camacho - get the conference key, create the session
         # key by inputting the conference key as its parent
-        c_key = ndb.Key(urlsafe=wsck)
+        c_key = conf.key
         s_id = Session.allocate_ids(size=1, parent=c_key)[0]
         s_key = ndb.Key(Session, s_id, parent=c_key)
         data['key'] = s_key
