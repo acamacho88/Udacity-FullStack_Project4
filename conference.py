@@ -619,14 +619,9 @@ class ConferenceApi(remote.Service):
         except:
             raise endpoints.BadRequestException("Invalid 'wsck' value")
 
-        ancestor = conf.key.parent().get()
-
-        u_key = ndb.Key(Profile,user_id)
-        anc_key = ancestor.key
-
         # Camacho - This will validate if the user created the conference to which
         # he or she is adding the session
-        if anc_key != u_key:
+        if user_id != conf.organizerUserId:
             raise endpoints.UnauthorizedException('You are not the creator of this conference')
 
         # copy SessionForm/ProtoRPC Message into dict
