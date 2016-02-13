@@ -20,6 +20,15 @@ will have the conference's key registered as its ancestor, thus
 making the ability to search for all sessions of a particular
 conference very easy.
 
+The Sessions have name, wsck, highlights, speaker, duration,
+typeOfSession, date, and starttime properties.  All of them, save
+for date, are String values (date is a Date type).  I thought it
+would be easiest to work with strings for almost all of the values
+including the non-obvious ones like duration and starttime, since
+it would allow the users flexibility to enter them in whatever
+format they wanted (duration for example could be entered as
+'40m', '1h', '1h20m' etc).
+
 getSessionsBySpeaker and getConferenceSessionsByType both only
 require the one input their names imply (speaker, type of
 conference).
