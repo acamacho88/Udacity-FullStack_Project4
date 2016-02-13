@@ -60,7 +60,7 @@ such a query would look like this:
 wssk = websafeSessionKey
 
 q = Wishlist.query().\
-    filter(Wishlist.sessionKeys==wssk)
+    filter(Wishlist.sessionKeys == wssk)
 
 return len(q)
 
@@ -70,9 +70,23 @@ than one property, typeOfSession and starttime.  To get around this,
 multiple == statements can be combined with ORs like so to specify
 all non-workshop sessions:
 
-q = Session.query(ndb.OR(Session.typeOfSession=='lecture',\
-                         Session.typeOfSession=='signing')).\
+q = Session.query(ndb.OR(Session.typeOfSession == 'lecture',\
+                         Session.typeOfSession == 'signing')).\
     filter(Session.starttime<'19:00')
+
+As an alternative method, the query could only specify the time
+inequality, and afterwards a loop could be made to add the sessions
+from the query that have the typeOfSession != 'workshop' to a new
+list:
+
+q = Session.query().\
+    filter(Session.starttime<'19:00')
+
+newq = []
+
+for sess in q:
+    if sess.typeOfSession != 'workshop':
+        newq.append(sess)
 
 
 ## TASK 4
