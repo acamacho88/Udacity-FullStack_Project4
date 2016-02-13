@@ -107,6 +107,12 @@ SESS_INFO_REQUEST = endpoints.ResourceContainer(
     wssk = messages.StringField(1),
 )
 
+SPEAK_SESS_QUERY = endpoints.ResourceContainer (
+    message_types.VoidMessage,
+    speaker=messages.StringField(1),
+    conferenceType=messages.StringField(2),
+)
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
@@ -810,6 +816,38 @@ class ConferenceApi(remote.Service):
         q = Session.query(ndb.OR(Session.typeOfSession=='lecture',\
                          Session.typeOfSession=='workshop')).\
                     filter(Session.starttime<'19:00')
+
+        return ConferenceForms(
+            items=[self._copyConferenceToForm(conf, "") for conf in q]
+        )
+
+    @endpoints.method(SPEAK_SESS_QUERY, ConferenceForms,
+            path='speakerConfQuery',http_method='GET',
+            name='speakerConfQuery')
+    def speakerConfQuery(self, request):
+        """Return filtered conference results"""
+
+        speaker = request.speaker
+        confType = request.conferenceType
+
+        q = Session.query().\
+            filter(Session.speaker == speaker).\
+            filter(Session.typeOfSession == confType)
+
+        return ConferenceForms(
+            items=[self._copyConferenceToForm(conf, "") for conf in q]
+        )
+
+    @endpoints.method(SESS_INFO_REQUEST, ConferenceForms,
+            path='numWishConfsQuery',http_method='GET',
+            name='numWishConfsQuery')
+    def numWishConfsQuery(self, request):
+        """Return filtered conference results"""
+
+        wssk = request.wssk
+
+        q = Wishlist.query().\
+            filter(Wishlist.sessionKeys==wssk)
 
         return ConferenceForms(
             items=[self._copyConferenceToForm(conf, "") for conf in q]

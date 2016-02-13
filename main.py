@@ -56,8 +56,8 @@ class FeaturedSpeakerHandler(webapp2.RequestHandler):
         time.sleep(3)
         # Camacho - check if the speaker has another session at the same conference
         q = Session.query().\
-            filter(Session.speaker==speaker).\
-            filter(Session.wsck==wsck)
+            filter(Session.speaker == speaker).\
+            filter(Session.wsck == wsck)
         sessions = q.fetch(100)
         # Camacho - if more than one session is found, add a memcache entry that
         # features the speaker and session names
