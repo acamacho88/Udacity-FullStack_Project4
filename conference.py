@@ -677,7 +677,7 @@ class ConferenceApi(remote.Service):
     def getSessionsBySpeaker(self, request):
         """Return sessions for a particular speaker across all conferences."""
         speak = request.speaker
-        # Camacho - create ancestor query for all key matches for this user
+        # Camacho - filter sessions by requested speaker
         sessions = Session.query()
         sessions = sessions.filter(Session.speaker == speak)
         return SessionForms(
@@ -685,7 +685,7 @@ class ConferenceApi(remote.Service):
                 sessions]
         )
 
-    @endpoints.method(WISH_POST_REQUEST, WishlistForm,
+    @endpoints.method(WISH_POST_REQUEST, SessionForms,
             path='addSessionToWishlist',
             http_method='PUT', name='addSessionToWishlist')
     def addSessionToWishlist(self, request):
@@ -702,8 +702,6 @@ class ConferenceApi(remote.Service):
         # Camacho - get the user's wishlist
         wl = Wishlist.query(ancestor=ndb.Key(Profile,user_id))
         wl = wl.get()
-
-        wlForm = WishlistForm()
 
         # Camacho - make sure the wishlist exists
         if not wl:
@@ -732,7 +730,18 @@ class ConferenceApi(remote.Service):
 
         wl.put()
 
-        return self._copyWishlistToForm(wl)
+        sessions = []
+
+        # Pass a list of the sessions in the wishlist to the
+        # _copySessionToForm function to return SessionForm
+        # object
+        for k in currKeys:
+            sessions.append(ndb.Key(urlsafe=k).get())
+
+        return SessionForms(
+                items=[self._copySessionToForm(sess) for sess in \
+                sessions]
+        )
 
     def _copyWishlistToForm(self,wl):
         """Copy wishlist to Form object"""
