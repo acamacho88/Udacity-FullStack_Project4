@@ -834,7 +834,8 @@ class ConferenceApi(remote.Service):
             path='speakerConfQuery',http_method='GET',
             name='speakerConfQuery')
     def speakerConfQuery(self, request):
-        """Return filtered conference results"""
+        """Return the  sessions of a specific speaker
+           and a specific type of session"""
 
         speaker = request.speaker
         confType = request.conferenceType
@@ -851,7 +852,8 @@ class ConferenceApi(remote.Service):
             path='numWishConfsQuery',http_method='GET',
             name='numWishConfsQuery')
     def numWishConfsQuery(self, request):
-        """Return filtered conference results"""
+        """Return number of users who have a particular
+           session in their wishlist"""
 
         wssk = request.wssk
 
