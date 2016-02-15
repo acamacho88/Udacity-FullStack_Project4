@@ -110,7 +110,7 @@ SESS_INFO_REQUEST = endpoints.ResourceContainer(
 SPEAK_SESS_QUERY = endpoints.ResourceContainer (
     message_types.VoidMessage,
     speaker=messages.StringField(1),
-    conferenceType=messages.StringField(2),
+    sessionType=messages.StringField(2),
 )
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -830,22 +830,22 @@ class ConferenceApi(remote.Service):
             items=[self._copyConferenceToForm(conf, "") for conf in q]
         )
 
-    @endpoints.method(SPEAK_SESS_QUERY, ConferenceForms,
-            path='speakerConfQuery',http_method='GET',
-            name='speakerConfQuery')
-    def speakerConfQuery(self, request):
+    @endpoints.method(SPEAK_SESS_QUERY, SessionForms,
+            path='speakerSessQuery',http_method='GET',
+            name='speakerSessQuery')
+    def speakerSessQuery(self, request):
         """Return the  sessions of a specific speaker
            and a specific type of session"""
 
         speaker = request.speaker
-        confType = request.conferenceType
+        sessType = request.sessionType
 
         q = Session.query().\
             filter(Session.speaker == speaker).\
-            filter(Session.typeOfSession == confType)
+            filter(Session.typeOfSession == sessType)
 
-        return ConferenceForms(
-            items=[self._copyConferenceToForm(conf, "") for conf in q]
+        return SessionForms(
+            items=[self._copySessionToForm(sess, "") for sess in q]
         )
 
     @endpoints.method(SESS_INFO_REQUEST, ConferenceForms,
