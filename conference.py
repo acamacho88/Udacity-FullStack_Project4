@@ -593,7 +593,7 @@ class ConferenceApi(remote.Service):
         for field in se.all_fields():
             if hasattr(sess, field.name):
                 # convert Date to date string; just copy others
-                if field.name.endswith('date'):
+                if field.name.endswith('date') or field.name.endswith('starttime'):
                     setattr(se, field.name, str(getattr(sess, field.name)))
                 else:
                     setattr(se, field.name, getattr(sess, field.name))
@@ -636,6 +636,10 @@ class ConferenceApi(remote.Service):
         # convert dates from strings to Date objects; set month based on start_date
         if data['date']:
             data['date'] = datetime.strptime(data['date'][:10], "%Y-%m-%d").date()
+
+        # Camacho - convert string times into time objects
+        if data['starttime']:
+            data['starttime'] = datetime.strptime(data['starttime'][:5], "%H:%M").time()
 
         # Camacho - get the conference key, create the session
         # key by inputting the conference key as its parent
@@ -845,7 +849,7 @@ class ConferenceApi(remote.Service):
             filter(Session.typeOfSession == sessType)
 
         return SessionForms(
-            items=[self._copySessionToForm(sess, "") for sess in q]
+            items=[self._copySessionToForm(sess) for sess in q]
         )
 
     @endpoints.method(SESS_INFO_REQUEST, StringMessage,
@@ -866,8 +870,11 @@ class ConferenceApi(remote.Service):
                 relevantWls.append(wlist)
 
         if relevantWls:
-            message = 'There are ' + str(len(relevantWls)) + ' wishlists with this session'
-            return StringMessage(data=message)
+            if len(relevantWls) == 1:
+                return StringMessage(data='There is 1 wishlist with this session')
+            else:
+                message = 'There are ' + str(len(relevantWls)) + ' wishlists with this session'
+                return StringMessage(data=message)
         else:
             return StringMessage(data='There are no wishlists with this session')
 

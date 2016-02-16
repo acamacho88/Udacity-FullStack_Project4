@@ -22,12 +22,13 @@ conference very easy.
 
 The Sessions have name, wsck, highlights, speaker, duration,
 typeOfSession, date, and starttime properties.  All of them, save
-for date, are String values (date is a Date type).  I thought it
-would be easiest to work with strings for almost all of the values
-including the non-obvious ones like duration and starttime, since
-it would allow the users flexibility to enter them in whatever
-format they wanted (duration for example could be entered as
-'40m', '1h', '1h20m' etc).
+for date and starttime, are String values (date is a Date type).
+I thought it would be easiest to work with strings for almost all
+of the values, since it would allow the users flexibility to enter
+them in whatever format they wanted.  starttime was created as a
+TimeProperty object, a list of which can be easily sorted by
+calling the sort function on it (for example, if t is a list of
+time objects, you can sort them by calling t.sort()).
 
 getSessionsBySpeaker and getConferenceSessionsByType both only
 require the one input their names imply (speaker, type of
