@@ -848,7 +848,7 @@ class ConferenceApi(remote.Service):
             items=[self._copySessionToForm(sess, "") for sess in q]
         )
 
-    @endpoints.method(SESS_INFO_REQUEST, ConferenceForms,
+    @endpoints.method(SESS_INFO_REQUEST, StringMessage,
             path='numWishConfsQuery',http_method='GET',
             name='numWishConfsQuery')
     def numWishConfsQuery(self, request):
@@ -857,12 +857,19 @@ class ConferenceApi(remote.Service):
 
         wssk = request.wssk
 
-        q = Wishlist.query().\
-            filter(Wishlist.sessionKeys==wssk)
+        q = Wishlist.query()
 
-        return ConferenceForms(
-            items=[self._copyConferenceToForm(conf, "") for conf in q]
-        )
+        relevantWls = []
+
+        for wlist in q:
+            if wssk in wlist.sessionKeys:
+                relevantWls.append(wlist)
+
+        if relevantWls:
+            message = 'There are ' + str(len(relevantWls)) + ' wishlists with this session'
+            return StringMessage(data=message)
+        else:
+            return StringMessage(data='There are no wishlists with this session')
 
     @endpoints.method(CONF_GET_REQUEST,StringMessage,
         path='getFeaturedSpeaker',http_method='GET',
